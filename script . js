@@ -1,0 +1,108 @@
+const envelope = document.getElementById("envelope");
+const letter = document.querySelector(".paper");
+const overlay = document.getElementById("overlay");
+const closeBtn = document.getElementById("close");
+
+let opened = false;
+
+// Open the envelope
+envelope.addEventListener("click", () => {
+
+    if (!opened) {
+
+        opened = true;
+
+        envelope.classList.add("open");
+
+        // Wait for the letter to slide out
+        setTimeout(() => {
+            letter.style.cursor = "pointer";
+            letter.animate(
+                [
+                    { transform: "scale(1)" },
+                    { transform: "scale(1.03)" },
+                    { transform: "scale(1)" }
+                ],
+                {
+                    duration: 800,
+                    easing: "ease"
+                }
+            );
+        }, 900);
+
+    } else {
+
+        // Open the full letter
+        overlay.classList.add("show");
+
+        document.querySelector(".full-letter").animate(
+            [
+                {
+                    opacity: 0,
+                    transform: "translateY(40px) scale(.95)"
+                },
+                {
+                    opacity: 1,
+                    transform: "translateY(0) scale(1)"
+                }
+            ],
+            {
+                duration: 700,
+                easing: "ease-out",
+                fill: "forwards"
+            }
+        );
+
+    }
+
+});
+
+// Close button
+closeBtn.addEventListener("click", () => {
+
+    overlay.classList.remove("show");
+
+});
+
+// Close when clicking outside the paper
+overlay.addEventListener("click", (e) => {
+
+    if (e.target === overlay) {
+
+        overlay.classList.remove("show");
+
+    }
+
+});
+
+// Press ESC to close
+document.addEventListener("keydown", (e) => {
+
+    if (e.key === "Escape") {
+
+        overlay.classList.remove("show");
+
+    }
+
+});
+
+// Gentle paper tilt effect
+document.addEventListener("mousemove", (e) => {
+
+    if (!opened) return;
+
+    const x = (e.clientX / window.innerWidth - 0.5) * 6;
+    const y = (e.clientY / window.innerHeight - 0.5) * -6;
+
+    letter.style.transform = `translateY(-145px) rotateX(${y}deg) rotateY(${x}deg)`;
+
+});
+
+// Reset when mouse leaves
+document.addEventListener("mouseleave", () => {
+
+    if (!opened) return;
+
+    letter.style.transform = "translateY(-145px) rotateX(0deg) rotateY(0deg)";
+
+});
